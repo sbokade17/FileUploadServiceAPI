@@ -56,8 +56,13 @@ public class FileController {
 
     @DeleteMapping("/{fileId}")
     public ResponseEntity deleteFileById(@PathVariable("fileId") Long fileId) throws IOException{
-        fileRepository.deleteById(fileId);
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted");
+        try{
+            fileRepository.deleteById(fileId);
+            return ResponseEntity.status(HttpStatus.OK).body("Deleted");
+        }catch (RuntimeException e){
+            throw new PetAppException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
     }
 
     private byte[] decompressBytes(byte[] data) {
